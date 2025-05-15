@@ -1,19 +1,39 @@
 package internal
 
-type MazeGenerator interface {
-    Generate(width, height int) [][]int
+import "fmt"
+
+type CellType int
+
+const (
+	Empty CellType = iota
+	Wall
+	Start
+	End
+	Visited
+)
+
+type Maze struct {
+	Width  int
+	Height int
+	Cells  [][]CellType
 }
 
-type mazeGeneratorFunc func(width, height int) [][]int
-
-func (f mazeGeneratorFunc) Generate(width, height int) [][]int {
-    return f(width, height)
-}
-
-func randomizedDFS(width, height int) [][]int {
-    return [][]int{}
-}
-
-func isolatedCells(width, height int) [][]int {
-    
+func (m *Maze) Print() {
+	for i := 0; i < m.Height; i++ {
+		for j := 0; j < m.Width; j++ {
+			switch m.Cells[i][j] {
+			case Visited:
+				fallthrough
+			case Empty:
+				fmt.Print(" ")
+			case Wall:
+				fmt.Print("#")
+			case Start:
+				fmt.Print("S")
+			case End:
+				fmt.Print("E")
+			}
+		}
+		fmt.Println()
+	}
 }
