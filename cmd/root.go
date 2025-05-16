@@ -13,7 +13,7 @@ var rootCmd = &cobra.Command{
 	Short: "Generate and solve the maze",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Welcome to the Maze Generator and Solver!")
-		maze, err := internal.RandomizedDFS(20, 20)
+		maze, err := internal.RandomizedPrim(20, 20)
 		if err != nil {
 			fmt.Println("Error generating maze:", err)
 			return

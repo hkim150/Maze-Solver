@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"math/rand"
 )
 
@@ -54,39 +53,97 @@ func RandomizedDFS(width, height int) (Maze, error) {
 	return maze, nil
 }
 
-// baseMaze generates a maze with grid like structure
-// where all cells are walls except for the odd row and odd column cells are empty
-// Because the outer edges are walls, the width and height must be at least 5
-// Also the width and height will be round down to the nearest odd number
-func baseMaze(width, height int) (Maze, error) {
-	if width < 5 || height < 5 {
-		return Maze{}, fmt.Errorf("width and height must be at least 5")
+func RandomizedKruskal(width, height int) (Maze, error) {
+	maze, err := baseMaze(width, height)
+	if err != nil {
+		return maze, err
 	}
 
-	if width%2 == 0 {
-		width--
-	}
-	if height%2 == 0 {
-		height--
-	}
-
-	cells := make([][]CellType, height)
-	for i := range cells {
-		cells[i] = make([]CellType, width)
-		for j := range cells[i] {
-			if i%2 == 1 && j%2 == 1 {
-				cells[i][j] = Empty
-			} else {
-				cells[i][j] = Wall
-			}
+	walls := make([][2]int, 0)
+	for row := 1; row < maze.Height-1; row++ {
+		for col := row%2 + 1; col < maze.Width-1; col += 2 {
+			walls = append(walls, [2]int{row, col})
 		}
 	}
 
-	maze := Maze{
-		Width:  width,
-		Height: height,
-		Cells:  cells,
+	to1D := func(row, col int) int {
+		return (row-1)/2*(maze.Width-1)/2 + (col-1)/2
 	}
+
+	uf := NewUnionFind((maze.Width - 1) / 2 * (maze.Height - 1) / 2)
+
+	rand.Shuffle(len(walls), func(i, j int) {
+		walls[i], walls[j] = walls[j], walls[i]
+	})
+
+	for _, wall := range walls {
+		row, col := wall[0], wall[1]
+		var cell_1, cell_2 int
+		if row%2 == 1 {
+			cell_1 = to1D(row, col-1)
+			cell_2 = to1D(row, col+1)
+		} else {
+			cell_1 = to1D(row-1, col)
+			cell_2 = to1D(row+1, col)
+		}
+
+		if !uf.IsConnected(cell_1, cell_2) {
+			maze.Cells[row][col] = Empty
+			uf.Union(cell_1, cell_2)
+		}
+	}
+
+	maze.Cells[1][1] = Start
+	maze.Cells[maze.Height-2][maze.Width-2] = End
+
+	return maze, nil
+}
+
+func RandomizedPrim(width, height int) (Maze, error) {
+	maze, err := baseMaze(width, height)
+	if err != nil {
+		return maze, err
+	}
+
+	// directionsToUnvisitedNeighbors returns the directions to the unvisited neighbor
+	directionsToUnvisitedNeighbors := func(row, col int) [][2]int {
+		directions := [][2]int{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}
+		unvisitedDir := make([][2]int, 0)
+		for _, dir := range directions {
+			neighRow := row + dir[0]*2
+			neighCol := col + dir[1]*2
+			if neighRow >= 1 && neighRow < maze.Height-1 && neighCol >= 1 && neighCol < maze.Width-1 && maze.Cells[neighRow][neighCol] != Visited {
+				maze.Cells[neighRow][neighCol] = Visited
+				unvisitedDir = append(unvisitedDir, dir)
+			}
+		}
+
+		return unvisitedDir
+	}
+
+	row := rand.Intn(maze.Height/2)*2 + 1
+	col := rand.Intn(maze.Width/2)*2 + 1
+	maze.Cells[row][col] = Visited
+	
+	rs := NewRandomizedSet[[4]int]()
+	dirs := directionsToUnvisitedNeighbors(row, col)
+	for _, dir := range dirs {
+		rs.Add([4]int{row, col, dir[0], dir[1]})
+	}
+
+	for !rs.IsEmpty() {
+		elem, _:= rs.GetRandom()
+		rs.Remove(elem)
+		row, col, rowDir, colDir := elem[0], elem[1], elem[2], elem[3]
+		maze.Cells[row+rowDir][col+colDir] = Empty
+		dirs := directionsToUnvisitedNeighbors(row+rowDir*2, col+colDir*2)
+		for _, dir := range dirs {
+			rs.Add([4]int{row + rowDir*2, col + colDir*2, dir[0], dir[1]})
+		}
+	}
+
+	maze.Cells[1][1] = Start
+	maze.Cells[maze.Height-2][maze.Width-2] = End
 
 	return maze, nil
 }
