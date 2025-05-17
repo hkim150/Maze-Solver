@@ -1,4 +1,4 @@
-package internal
+package dataStructure
 
 type HashStack[T comparable] struct {
 	stack []T
@@ -43,7 +43,7 @@ func (s *HashStack[T]) Peek() (T, bool) {
 	return s.stack[len(s.stack)-1], true
 }
 
-func (s *HashStack[T]) Len () int {
+func (s *HashStack[T]) Len() int {
 	return len(s.stack)
 }
 

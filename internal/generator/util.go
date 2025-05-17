@@ -1,6 +1,9 @@
-package internal
+package generator
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 // baseMaze generates a maze with grid like structure
 // where all cells are walls except for the odd row and odd column cells are empty
@@ -31,12 +34,21 @@ func baseMaze(width, height int) (Maze, error) {
 	}
 
 	maze := Maze{
-		Width:  width,
-		Height: height,
-		Cells:  cells,
+		Width:     width,
+		Height:    height,
+		Cells:     cells,
 		StartCell: [2]int{1, 1},
 		EndCell:   [2]int{height - 2, width - 2},
 	}
 
 	return maze, nil
+}
+
+// randomDirections returns a random order of directions in the maze (up, left, down, right)
+func randomDirections() [][2]int {
+	directions := [][2]int{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}
+	rand.Shuffle(len(directions), func(i, j int) {
+		directions[i], directions[j] = directions[j], directions[i]
+	})
+	return directions
 }

@@ -1,4 +1,4 @@
-package internal
+package dataStructure
 
 import "math/rand"
 

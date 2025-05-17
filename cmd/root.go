@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"maze-solver/internal"
+	"maze-solver/internal/generator"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -20,7 +20,7 @@ var rootCmd = &cobra.Command{
 		width, _ := cmd.Flags().GetInt("width")
 		height, _ := cmd.Flags().GetInt("height")
 
-		maze, err := internal.WilsonsAlgorithm(width, height)
+		maze, err := generator.WilsonsAlgorithm(width, height)
 		if err != nil {
 			fmt.Println("Error generating maze:", err)
 			return
