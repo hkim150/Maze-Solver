@@ -147,3 +147,73 @@ func RandomizedPrim(width, height int) (Maze, error) {
 
 	return maze, nil
 }
+
+func WilsonsAlgorithm(width, height int) (Maze, error) {
+	maze, err := baseMaze(width, height)
+	if err != nil {
+		return maze, err
+	}
+
+	notVisited := NewRandomizedSet[[2]int]()
+	for i := 1; i < maze.Height-1; i += 2 {
+		for j := 1; j < maze.Width-1; j += 2 {
+			notVisited.Add([2]int{i, j})
+		}
+	}
+
+	initial, _ := notVisited.GetRandom()
+	row, col := initial[0], initial[1]
+	notVisited.Remove(initial)
+	maze.Cells[row][col] = Visited
+
+	for !notVisited.IsEmpty() {
+		start, _ := notVisited.GetRandom()
+		row, col = start[0], start[1]
+		stack := [][2]int{{row, col}}
+		passedWalls := [][2]int{}
+		visiting := map[[2]int]bool{{row, col}: true}
+		maze.Print()
+		for {
+			cell := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			row, col = cell[0], cell[1]
+			if maze.Cells[row][col] == Visited {
+				for _, cell := range passedWalls {
+					maze.Cells[cell[0]][cell[1]] = Visited
+				}
+
+				for _, cell := range stack {
+					maze.Cells[cell[0]][cell[1]] = Visited
+					notVisited.Remove(cell)
+				}
+				break
+			}
+
+			directions := [][2]int{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}
+			rand.Shuffle(len(directions), func(i, j int) {
+				directions[i], directions[j] = directions[j], directions[i]
+			})
+			neighCount := 0
+			for _, dir := range directions {
+				neighRow := row + dir[0]*2
+				neighCol := col + dir[1]*2
+				if neighRow >= 1 && neighRow < maze.Height-1 && neighCol >= 1 && neighCol < maze.Width-1 {
+					if !visiting[[2]int{neighRow, neighCol}] {
+						stack = append(stack, [2]int{neighRow, neighCol})
+						passedWalls = append(passedWalls, [2]int{row + dir[0], col + dir[1]})
+						visiting[[2]int{neighRow, neighCol}] = true
+						neighCount++
+					}
+				}
+			}
+			if neighCount == 0 {
+				visiting[[2]int{row, col}] = false
+				passedWalls = passedWalls[:len(passedWalls)-1]
+			}
+		}
+	}
+
+	maze.Cells[1][1] = Start
+	maze.Cells[maze.Height-2][maze.Width-2] = End
+	return maze, nil
+}
