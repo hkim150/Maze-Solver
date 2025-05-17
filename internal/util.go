@@ -34,6 +34,8 @@ func baseMaze(width, height int) (Maze, error) {
 		Width:  width,
 		Height: height,
 		Cells:  cells,
+		StartCell: [2]int{1, 1},
+		EndCell:   [2]int{height - 2, width - 2},
 	}
 
 	return maze, nil
