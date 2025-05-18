@@ -9,8 +9,8 @@ import (
 )
 
 func init() {
-	rootCmd.Flags().IntP("width", "w", 20, "Width of the maze")
-	rootCmd.Flags().IntP("height", "l", 20, "Height of the maze")
+	rootCmd.Flags().IntP("width", "w", 25, "Width of the maze")
+	rootCmd.Flags().IntP("height", "l", 25, "Height of the maze")
 	rootCmd.Flags().StringP("algorithm", "a", "wilson", "Algorithm to use for maze generation (wilson, dfs, kruskal, prim, aldous-broder)")
 }
 
