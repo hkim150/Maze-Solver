@@ -56,5 +56,8 @@ func RandomizedPrim(width, height int) (Maze, error) {
 		}
 	}
 
+	maze.Cells[maze.StartCell[0]][maze.StartCell[1]] = Start
+	maze.Cells[maze.EndCell[0]][maze.EndCell[1]] = End
+
 	return maze, nil
 }

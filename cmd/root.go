@@ -21,8 +21,10 @@ var rootCmd = &cobra.Command{
 		width, _ := cmd.Flags().GetInt("width")
 		height, _ := cmd.Flags().GetInt("height")
 		algorithm, _ := cmd.Flags().GetString("algorithm")
+		
 		var maze generator.Maze
 		var err error
+
 		switch algorithm {
 		case "dfs":
 			maze, err = generator.RandomizedDFS(width, height)
@@ -44,6 +46,7 @@ var rootCmd = &cobra.Command{
 			fmt.Println("Error generating maze:", err)
 			return
 		}
+		
 		maze.Print()
 	},
 }

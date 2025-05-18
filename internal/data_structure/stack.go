@@ -43,3 +43,7 @@ func (s *Stack[T]) IsEmpty() bool {
 func (s *Stack[T]) Clear() {
 	s.stack = []T{}
 }
+
+func (s *Stack[T]) ToSlice() []T {
+	return s.stack
+}
