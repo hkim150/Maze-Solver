@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"math/rand"
 	dataStructure "maze-solver/internal/data_structure"
 )
 
@@ -80,15 +79,11 @@ func WilsonsAlgorithm(width, height int) (Maze, error) {
 			}
 
 			// add the current cell's unvisited neighbors to the stack
-			directions := [][2]int{{-2, 0}, {0, -2}, {2, 0}, {0, 2}}
-			rand.Shuffle(len(directions), func(i, j int) {
-				directions[i], directions[j] = directions[j], directions[i]
-			})
-			for _, dir := range directions {
-				neighRow := currRow + dir[0]
-				neighCol := currCol + dir[1]
+			for _, dir := range randomDirections() {
+				neighRow := currRow + dir[0]*2
+				neighCol := currCol + dir[1]*2
 				if neighRow >= 1 && neighRow < maze.Height-1 && neighCol >= 1 && neighCol < maze.Width-1 && !visiting.Contains([2]int{neighRow, neighCol}) {
-					stack = append(stack, [4]int{currRow, currCol, dir[0], dir[1]})
+					stack = append(stack, [4]int{currRow, currCol, dir[0] * 2, dir[1] * 2})
 				}
 			}
 		}
