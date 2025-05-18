@@ -11,7 +11,7 @@ import (
 func init() {
 	rootCmd.Flags().IntP("width", "w", 20, "Width of the maze")
 	rootCmd.Flags().IntP("height", "l", 20, "Height of the maze")
-	rootCmd.Flags().StringP("algorithm", "a", "wilson", "Algorithm to use for maze generation (wilson, dfs, kruskal, prim)")
+	rootCmd.Flags().StringP("algorithm", "a", "wilson", "Algorithm to use for maze generation (wilson, dfs, kruskal, prim, aldous-broder)")
 }
 
 var rootCmd = &cobra.Command{
@@ -32,9 +32,11 @@ var rootCmd = &cobra.Command{
 			maze, err = generator.RandomizedPrim(width, height)
 		case "wilson":
 			maze, err = generator.WilsonsAlgorithm(width, height)
+		case "aldous-broder":
+			maze, err = generator.AldousBroder(width, height)
 		default:
 			fmt.Println("Unknown algorithm:", algorithm)
-			fmt.Println("Available algorithms: dfs, kruskal, prim, wilson")
+			fmt.Println("Available algorithms: dfs, kruskal, prim, wilson, aldous-broder")
 			return
 		}
 
