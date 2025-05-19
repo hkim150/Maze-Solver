@@ -68,7 +68,7 @@ func emptyMaze(width, height int) (Maze, error) {
 		cells[r][0] = Wall
 		cells[r][width-1] = Wall
 	}
-	
+
 	for c := range width {
 		cells[0][c] = Wall
 		cells[height-1][c] = Wall
