@@ -11,7 +11,7 @@ import (
 func init() {
 	rootCmd.Flags().IntP("width", "w", 25, "Width of the maze")
 	rootCmd.Flags().IntP("height", "l", 25, "Height of the maze")
-	rootCmd.Flags().StringP("algorithm", "a", "wilson", "Algorithm to use for maze generation (wilson, dfs, kruskal, prim, aldous-broder)")
+	rootCmd.Flags().StringP("algorithm", "a", "dfs", "Algorithm to use for maze generation (wilson, dfs, kruskal, prim, aldous-broder, recursive-division)")
 }
 
 var rootCmd = &cobra.Command{
@@ -21,7 +21,7 @@ var rootCmd = &cobra.Command{
 		width, _ := cmd.Flags().GetInt("width")
 		height, _ := cmd.Flags().GetInt("height")
 		algorithm, _ := cmd.Flags().GetString("algorithm")
-		
+
 		var maze generator.Maze
 		var err error
 
@@ -36,9 +36,11 @@ var rootCmd = &cobra.Command{
 			maze, err = generator.WilsonsAlgorithm(width, height)
 		case "aldous-broder":
 			maze, err = generator.AldousBroder(width, height)
+		case "recursive-division":
+			maze, err = generator.RecursiveDivision(width, height)
 		default:
 			fmt.Println("Unknown algorithm:", algorithm)
-			fmt.Println("Available algorithms: dfs, kruskal, prim, wilson, aldous-broder")
+			fmt.Println("Available algorithms: dfs, kruskal, prim, wilson, aldous-broder, recursive-division")
 			return
 		}
 

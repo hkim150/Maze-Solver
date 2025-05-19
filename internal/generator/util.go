@@ -47,6 +47,47 @@ func baseMaze(width, height int) (Maze, error) {
 	return maze, nil
 }
 
+func emptyMaze(width, height int) (Maze, error) {
+	if width < 5 || height < 5 {
+		return Maze{}, fmt.Errorf("width and height must be at least 5")
+	}
+
+	if width%2 == 0 {
+		width--
+	}
+	if height%2 == 0 {
+		height--
+	}
+
+	cells := make([][]CellType, height)
+	for i := range cells {
+		cells[i] = make([]CellType, width)
+	}
+
+	for r := range height {
+		cells[r][0] = Wall
+		cells[r][width-1] = Wall
+	}
+	
+	for c := range width {
+		cells[0][c] = Wall
+		cells[height-1][c] = Wall
+	}
+
+	maze := Maze{
+		Width:     width,
+		Height:    height,
+		Cells:     cells,
+		StartCell: [2]int{1, 1},
+		EndCell:   [2]int{height - 2, width - 2},
+	}
+
+	maze.Cells[maze.StartCell[0]][maze.StartCell[1]] = Start
+	maze.Cells[maze.EndCell[0]][maze.EndCell[1]] = End
+
+	return maze, nil
+}
+
 // randomDirections returns a random order of directions in the maze (up, left, down, right)
 func randomDirections() [][2]int {
 	directions := [][2]int{{-1, 0}, {0, -1}, {1, 0}, {0, 1}}
