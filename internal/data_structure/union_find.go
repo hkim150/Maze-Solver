@@ -1,24 +1,23 @@
 package dataStructure
 
-type UnionFind struct {
-	root []int
-	rank []int
+type UnionFind[T comparable] struct {
+	root map[T]T
+	rank map[T]int
 }
 
-func NewUnionFind(n int) *UnionFind {
-	uf := &UnionFind{
-		root: make([]int, n),
-		rank: make([]int, n),
+func NewUnionFind[T comparable]() *UnionFind[T] {
+	return &UnionFind[T]{
+		root: make(map[T]T),
+		rank: make(map[T]int),
 	}
-
-	for i := 0; i < n; i++ {
-		uf.root[i] = i
-	}
-
-	return uf
 }
 
-func (uf *UnionFind) Root(x int) int {
+func (uf *UnionFind[T]) Root(x T) T {
+	if _, ok := uf.root[x]; !ok {
+		uf.root[x] = x
+		return x
+	}
+
 	if uf.root[x] != x {
 		uf.root[x] = uf.Root(uf.root[x])
 	}
@@ -26,7 +25,7 @@ func (uf *UnionFind) Root(x int) int {
 	return uf.root[x]
 }
 
-func (uf *UnionFind) Union(x, y int) {
+func (uf *UnionFind[T]) Union(x, y T) {
 	if uf.Root(x) == uf.Root(y) {
 		return
 	}
@@ -41,6 +40,6 @@ func (uf *UnionFind) Union(x, y int) {
 	}
 }
 
-func (uf *UnionFind) IsConnected(x, y int) bool {
+func (uf *UnionFind[T]) IsConnected(x, y T) bool {
 	return uf.Root(x) == uf.Root(y)
 }
