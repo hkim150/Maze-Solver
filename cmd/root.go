@@ -11,7 +11,7 @@ import (
 func init() {
 	rootCmd.Flags().IntP("width", "w", 25, "Width of the maze")
 	rootCmd.Flags().IntP("height", "l", 25, "Height of the maze")
-	rootCmd.Flags().StringP("algorithm", "a", "dfs", "Algorithm to use for maze generation (wilson, dfs, kruskal, prim, aldous-broder, recursive-division, fractal, eller, hunt-and-kill, sidewinder)")
+	rootCmd.Flags().StringP("algorithm", "a", "dfs", "Algorithm to use for maze generation (wilson, dfs, kruskal, prim, aldous-broder, recursive-division, fractal, eller, hunt-and-kill, sidewinder, binary-tree)")
 }
 
 var rootCmd = &cobra.Command{
@@ -46,9 +46,11 @@ var rootCmd = &cobra.Command{
 			maze, err = generator.HuntAndKill(width, height)
 		case "sidewinder":
 			maze, err = generator.SidewinderAlgorithm(width, height)
+		case "binary-tree":
+			maze, err = generator.BinaryTreeAlgorithm(width, height)
 		default:
 			fmt.Println("Unknown algorithm:", algorithm)
-			fmt.Println("Available algorithms: dfs, kruskal, prim, wilson, aldous-broder, recursive-division, fractal, eller, hunt-and-kill, sidewinder")
+			fmt.Println("Available algorithms: dfs, kruskal, prim, wilson, aldous-broder, recursive-division, fractal, eller, hunt-and-kill, sidewinder, binary-tree")
 			return
 		}
 
