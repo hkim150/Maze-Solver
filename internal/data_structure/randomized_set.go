@@ -57,3 +57,8 @@ func (rs *RandomizedSet[T]) Len() int {
 func (rs *RandomizedSet[T]) IsEmpty() bool {
 	return len(rs.values) == 0
 }
+
+func (rs *RandomizedSet[T]) Clear() {
+	rs.values = make([]T, 0)
+	rs.indexes = make(map[T]int)
+}
