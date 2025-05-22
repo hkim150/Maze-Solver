@@ -1,13 +1,14 @@
-package generator
+package algorithm
 
 import (
 	"math/rand"
+	"maze-solver/internal/maze"
 )
 
-func RecursiveDivision(width, height int) (Maze, error) {
-	maze, err := emptyMaze(width, height)
+func RecursiveDivision(width, height int) (*maze.Maze, error) {
+	m, err := blankMaze(width, height)
 	if err != nil {
-		return maze, err
+		return m, err
 	}
 
 	var division func(minRow, maxRow, minCol, maxCol int)
@@ -20,18 +21,18 @@ func RecursiveDivision(width, height int) (Maze, error) {
 		divCol := minCol + (1+rand.Intn((maxCol-minCol)/2-1))*2
 
 		for col := minCol + 1; col < maxCol; col++ {
-			maze.Cells[divRow][col] = Wall
+			m.Cells[divRow][col] = maze.Wall
 		}
 
 		for row := minRow + 1; row < maxRow; row++ {
-			maze.Cells[row][divCol] = Wall
+			m.Cells[row][divCol] = maze.Wall
 		}
 
 		holeRow1 := minRow + rand.Intn((divRow-minRow)/2)*2 + 1
 		holeRow2 := divRow + rand.Intn((maxRow-divRow)/2)*2 + 1
 		holeCol1 := minCol + rand.Intn((divCol-minCol)/2)*2 + 1
 		holeCol2 := divCol + rand.Intn((maxCol-divCol)/2)*2 + 1
-		holeCells := [4][2]int{{holeRow1, divCol}, {holeRow2, divCol}, {divRow, holeCol1}, {divRow, holeCol2}}
+		holeCells := [4]maze.Pos{{holeRow1, divCol}, {holeRow2, divCol}, {divRow, holeCol1}, {divRow, holeCol2}}
 
 		rand.Shuffle(4, func(i, j int) {
 			holeCells[i], holeCells[j] = holeCells[j], holeCells[i]
@@ -39,7 +40,7 @@ func RecursiveDivision(width, height int) (Maze, error) {
 
 		for i := 0; i < 3; i++ {
 			holeRow, holeCol := holeCells[i][0], holeCells[i][1]
-			maze.Cells[holeRow][holeCol] = Empty
+			m.Cells[holeRow][holeCol] = maze.Empty
 		}
 
 		division(minRow, divRow, minCol, divCol)
@@ -48,7 +49,7 @@ func RecursiveDivision(width, height int) (Maze, error) {
 		division(divRow, maxRow, divCol, maxCol)
 	}
 
-	division(0, maze.Height-1, 0, maze.Width-1)
+	division(0, m.Height-1, 0, m.Width-1)
 
-	return maze, nil
+	return m, nil
 }

@@ -1,4 +1,4 @@
-package generator
+package maze
 
 import (
 	"fmt"
@@ -28,12 +28,29 @@ const (
 	Gray   = "\033[90m"
 )
 
+type Pos [2]int
+
 type Maze struct {
-	Width     int
-	Height    int
-	Cells     [][]CellType
-	StartCell [2]int
-	EndCell   [2]int
+	Width    int
+	Height   int
+	Cells    [][]CellType
+	StartPos Pos
+	EndPos   Pos
+}
+
+func NewMaze(width, height int) *Maze {
+	cells := make([][]CellType, height)
+	for row := range cells {
+		cells[row] = make([]CellType, width)
+	}
+
+	return &Maze{
+		Width:    width,
+		Height:   height,
+		Cells:    cells,
+		StartPos: Pos{1, 1},
+		EndPos:   Pos{height - 2, width - 2},
+	}
 }
 
 func (m *Maze) Print() {

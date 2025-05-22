@@ -1,30 +1,32 @@
-package generator
+package algorithm
 
-func HuntAndKill(width, height int) (Maze, error) {
-	maze, err := baseMaze(width, height)
+import "maze-solver/internal/maze"
+
+func HuntAndKill(width, height int) (*maze.Maze, error) {
+	m, err := initialMaze(width, height)
 	if err != nil {
-		return maze, err
+		return m, err
 	}
 
-	maze.Cells[1][1] = Empty
-	maze.Cells[maze.Height-2][maze.Width-2] = Empty
+	m.Cells[1][1] = maze.Empty
+	m.Cells[m.Height-2][m.Width-2] = maze.Empty
 
 	// to quckly find the top left empty cell, the number of empty cells per row is stored
 	// this way, top left empty cell can be found in O(height + width) time
-	emptyCount := make([]int, maze.Height-1)
-	for row := 1; row < maze.Width-1; row += 2 {
-		emptyCount[row] = (maze.Width - 1) / 2
+	emptyCount := make([]int, m.Height-1)
+	for row := 1; row < m.Width-1; row += 2 {
+		emptyCount[row] = (m.Width - 1) / 2
 	}
 
 	for {
 		// find the first empty cell from top left
 		var r, c int
-		for row := 1; row < maze.Height-1; row += 2 {
+		for row := 1; row < m.Height-1; row += 2 {
 			if emptyCount[row] > 0 {
-				for col := 1; col < maze.Width-1; col++ {
-					if maze.Cells[row][col] == Empty {
+				for col := 1; col < m.Width-1; col++ {
+					if m.Cells[row][col] == maze.Empty {
 						r, c = row, col
-						maze.Cells[r][c] = Visited
+						m.Cells[r][c] = maze.Visited
 						emptyCount[row]--
 						break
 					}
@@ -42,8 +44,8 @@ func HuntAndKill(width, height int) (Maze, error) {
 		for _, dir := range randomDirections() {
 			neighRow, neighCol := r+dir[0]*2, c+dir[1]*2
 			wallRow, wallCol := r+dir[0], c+dir[1]
-			if neighRow >= 1 && neighRow < maze.Height-1 && neighCol >= 1 && neighCol < maze.Width-1 && maze.Cells[neighRow][neighCol] == Visited {
-				maze.Cells[wallRow][wallCol] = Visited
+			if neighRow >= 1 && neighRow < m.Height-1 && neighCol >= 1 && neighCol < m.Width-1 && m.Cells[neighRow][neighCol] == maze.Visited {
+				m.Cells[wallRow][wallCol] = maze.Visited
 				break
 			}
 		}
@@ -56,9 +58,9 @@ func HuntAndKill(width, height int) (Maze, error) {
 			for _, dir := range randomDirections() {
 				neighRow, neighCol := r+dir[0]*2, c+dir[1]*2
 				wallRow, wallCol := r+dir[0], c+dir[1]
-				if neighRow >= 1 && neighRow < maze.Height-1 && neighCol >= 1 && neighCol < maze.Width-1 && maze.Cells[neighRow][neighCol] == Empty {
-					maze.Cells[neighRow][neighCol] = Visited
-					maze.Cells[wallRow][wallCol] = Visited
+				if neighRow >= 1 && neighRow < m.Height-1 && neighCol >= 1 && neighCol < m.Width-1 && m.Cells[neighRow][neighCol] == maze.Empty {
+					m.Cells[neighRow][neighCol] = maze.Visited
+					m.Cells[wallRow][wallCol] = maze.Visited
 					emptyCount[neighRow]--
 					r, c = neighRow, neighCol
 					isDeadEnd = false
@@ -68,8 +70,5 @@ func HuntAndKill(width, height int) (Maze, error) {
 		}
 	}
 
-	maze.Cells[1][1] = Start
-	maze.Cells[maze.Height-2][maze.Width-2] = End
-
-	return maze, nil
+	return m, nil
 }

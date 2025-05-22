@@ -22,43 +22,12 @@ var rootCmd = &cobra.Command{
 		height, _ := cmd.Flags().GetInt("height")
 		algorithm, _ := cmd.Flags().GetString("algorithm")
 
-		var maze generator.Maze
-		var err error
-
-		switch algorithm {
-		case "dfs":
-			maze, err = generator.RandomizedDFS(width, height)
-		case "kruskal":
-			maze, err = generator.RandomizedKruskal(width, height)
-		case "prim":
-			maze, err = generator.RandomizedPrim(width, height)
-		case "wilson":
-			maze, err = generator.WilsonsAlgorithm(width, height)
-		case "aldous-broder":
-			maze, err = generator.AldousBroder(width, height)
-		case "recursive-division":
-			maze, err = generator.RecursiveDivision(width, height)
-		case "fractal":
-			maze, err = generator.FractalTessellation(width, height)
-		case "eller":
-			maze, err = generator.EllersAlgorithm(width, height)
-		case "hunt-and-kill":
-			maze, err = generator.HuntAndKill(width, height)
-		case "sidewinder":
-			maze, err = generator.SidewinderAlgorithm(width, height)
-		case "binary-tree":
-			maze, err = generator.BinaryTreeAlgorithm(width, height)
-		default:
-			fmt.Println("Unknown algorithm:", algorithm)
-			fmt.Println("Available algorithms: dfs, kruskal, prim, wilson, aldous-broder, recursive-division, fractal, eller, hunt-and-kill, sidewinder, binary-tree")
-			return
-		}
-
+		maze, err := generator.Generate(width, height, algorithm)
 		if err != nil {
 			fmt.Println("Error generating maze:", err)
 			return
 		}
-		
+
 		maze.Print()
 	},
 }
