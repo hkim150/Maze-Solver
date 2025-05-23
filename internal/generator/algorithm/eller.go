@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	dataStructure "maze-solver/internal/data_structure"
 	"maze-solver/internal/maze"
+	"time"
 )
 
 const (
@@ -11,7 +12,7 @@ const (
 	downwardMergeProb = 0.2
 )
 
-func Ellers(width, height int) (*maze.Maze, error) {
+func Ellers(width, height int, animate bool) (*maze.Maze, error) {
 	m, err := initialMaze(width, height)
 	if err != nil {
 		return m, err
@@ -20,6 +21,12 @@ func Ellers(width, height int) (*maze.Maze, error) {
 	// union find for checking connectivity between two cells in O(1) time
 	uf := dataStructure.NewUnionFind[maze.Pos]()
 
+	var delay time.Duration
+	if animate {
+		delay = 40 * time.Millisecond
+		m.PrintForAnimation(delay)
+	}
+
 	for r := 1; r < m.Height-3; r += 2 {
 		// random horizonal cell merge in the row
 		for c := 1; c < m.Width-3; c += 2 {
@@ -27,6 +34,12 @@ func Ellers(width, height int) (*maze.Maze, error) {
 			cell2 := maze.Pos{r, c + 2}
 			if !uf.IsConnected(cell1, cell2) {
 				if rand.Float32() < sidewaysMergeProb {
+					// mark the wall as visiting to highlight for animation
+					if animate {
+						m.Cells[r][c+1] = maze.Visiting
+						m.PrintForAnimation(delay)
+					}
+					
 					m.Cells[r][c+1] = maze.Empty
 					uf.Union(cell1, cell2)
 				}
@@ -50,6 +63,12 @@ func Ellers(width, height int) (*maze.Maze, error) {
 			for i := 0; i < len(cols); i++ {
 				// make sure that a set has at least 1 connection downwards
 				if i == 0 || rand.Float64() < downwardMergeProb {
+					// mark the wall as visiting to highlight for animation
+					if animate {
+						m.Cells[r+1][cols[i]] = maze.Visiting
+						m.PrintForAnimation(delay)
+					}
+
 					m.Cells[r+1][cols[i]] = maze.Empty
 					uf.Union(maze.Pos{r, cols[i]}, maze.Pos{r + 2, cols[i]})
 				}
@@ -63,6 +82,12 @@ func Ellers(width, height int) (*maze.Maze, error) {
 		cell1 := maze.Pos{r, c}
 		cell2 := maze.Pos{r, c + 2}
 		if !uf.IsConnected(cell1, cell2) {
+			// mark the wall as visiting to highlight for animation
+			if animate {
+				m.Cells[r][c+1] = maze.Visiting
+				m.PrintForAnimation(delay)
+			}
+
 			m.Cells[r][c+1] = maze.Empty
 			uf.Union(cell1, cell2)
 		}

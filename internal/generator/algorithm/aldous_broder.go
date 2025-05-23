@@ -3,9 +3,10 @@ package algorithm
 import (
 	"math/rand"
 	"maze-solver/internal/maze"
+	"time"
 )
 
-func AldousBroder(width, height int) (*maze.Maze, error) {
+func AldousBroder(width, height int, animate bool) (*maze.Maze, error) {
 	m, err := initialMaze(width, height)
 	if err != nil {
 		return m, err
@@ -20,23 +21,37 @@ func AldousBroder(width, height int) (*maze.Maze, error) {
 	}
 
 	// Randomly select a starting cell from the isolated empty cells.
-	startRow := rand.Intn((m.Height-1)/2)*2 + 1
-	startCol := rand.Intn((m.Width-1)/2)*2 + 1
-	m.Cells[startRow][startCol] = maze.Visited
-	delete(notVisited, maze.Pos{startRow, startCol})
+	r := rand.Intn((m.Height-1)/2)*2 + 1
+	c := rand.Intn((m.Width-1)/2)*2 + 1
+	m.Cells[r][c] = maze.Visited
+	delete(notVisited, maze.Pos{r, c})
+
+	var delay time.Duration
+	if animate {
+		delay = 40 * time.Millisecond
+		m.PrintForAnimation(delay)
+	}
 
 	for len(notVisited) > 0 {
 		for _, dir := range randomDirections() {
-			neighRow := startRow + dir[0]*2
-			neighCol := startCol + dir[1]*2
+			neighRow := r + dir[0]*2
+			neighCol := c + dir[1]*2
 			if neighRow >= 1 && neighRow < m.Height-1 && neighCol >= 1 && neighCol < m.Width-1 {
 				if m.Cells[neighRow][neighCol] != maze.Visited {
 					// remove the wall between the current cell and the neighbor
-					m.Cells[startRow+dir[0]][startCol+dir[1]] = maze.Visited
+					m.Cells[r+dir[0]][c+dir[1]] = maze.Visited
+
+					// mark the next cell as visiting to highlight in the animation
+					if animate {
+						m.Cells[neighRow][neighCol] = maze.Visiting
+						m.PrintForAnimation(delay)
+					}
+
 					m.Cells[neighRow][neighCol] = maze.Visited
 					delete(notVisited, maze.Pos{neighRow, neighCol})
 				}
-				startRow, startCol = neighRow, neighCol
+
+				r, c = neighRow, neighCol
 				break
 			}
 		}

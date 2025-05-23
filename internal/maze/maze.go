@@ -2,6 +2,7 @@ package maze
 
 import (
 	"fmt"
+	"time"
 )
 
 type CellType int
@@ -63,10 +64,27 @@ func (m *Maze) Print() {
 				fmt.Print(Green + "██" + Reset)
 			case End:
 				fmt.Print(Red + "██" + Reset)
+			case Visited:
+				fmt.Print("  ")
+			case Visiting:
+				fmt.Print(Blue + "██" + Reset)
 			default:
 				fmt.Print("  ")
 			}
 		}
 		fmt.Println()
 	}
+}
+
+// ClearScreen clears the terminal screen using ANSI escape codes
+func ClearScreen() {
+	fmt.Print("\033[H\033[2J")
+}
+
+// PrintForAnimation clears the screen and prints the current state of the maze
+// with a delay for animation effect
+func (m *Maze) PrintForAnimation(delay time.Duration) {
+	ClearScreen()
+	m.Print()
+	time.Sleep(delay)
 }

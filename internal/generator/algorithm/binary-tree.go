@@ -3,12 +3,19 @@ package algorithm
 import (
 	"math/rand"
 	"maze-solver/internal/maze"
+	"time"
 )
 
-func BinaryTree(width, height int) (*maze.Maze, error) {
+func BinaryTree(width, height int, animate bool) (*maze.Maze, error) {
 	m, err := initialMaze(width, height)
 	if err != nil {
 		return m, err
+	}
+
+	var delay time.Duration
+	if animate {
+		delay = 40 * time.Millisecond
+		m.PrintForAnimation(delay)
 	}
 
 	// for each cell, if can merge to right and down, choose randomly
@@ -23,8 +30,16 @@ func BinaryTree(width, height int) (*maze.Maze, error) {
 			}
 
 			if right {
+				if animate {
+					m.Cells[r][c+1] = maze.Visiting
+					m.PrintForAnimation(delay)
+				}
 				m.Cells[r][c+1] = maze.Visited
 			} else if down {
+				if animate {
+					m.Cells[r+1][c] = maze.Visiting
+					m.PrintForAnimation(delay)
+				}
 				m.Cells[r+1][c] = maze.Visited
 			}
 		}

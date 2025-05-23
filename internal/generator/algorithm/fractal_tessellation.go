@@ -3,9 +3,10 @@ package algorithm
 import (
 	"math/rand"
 	"maze-solver/internal/maze"
+	"time"
 )
 
-func FractalTessellation(width, height int) (*maze.Maze, error) {
+func FractalTessellation(width, height int, animate bool) (*maze.Maze, error) {
 	// the algorithm generates squares of certain sizes
 	// clip the length of the maze to the largest square within the width and height
 	length := 3
@@ -23,8 +24,14 @@ func FractalTessellation(width, height int) (*maze.Maze, error) {
 		return m, err
 	}
 
-	// set the top left start cell as empty so that the start cell doesn't get copied over
-	m.Cells[1][1] = maze.Empty
+	// set start cell as empty so that the start cell doesn't get copied over
+	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Empty
+
+	var delay time.Duration
+	if animate {
+		delay = 500 * time.Millisecond
+		// m.PrintForAnimation(delay)
+	}
 
 	length = 1
 	for 2*length-1 < m.Width {
@@ -33,9 +40,13 @@ func FractalTessellation(width, height int) (*maze.Maze, error) {
 		for _, startCell := range startCells {
 			row, col := startCell[0], startCell[1]
 			for i := range length {
-				for j := range length {
+				for j:=1-i%2; j<length; j+=2 {
 					m.Cells[row+i][col+j] = m.Cells[i+1][j+1]
 				}
+			}
+			
+			if animate && length > 1 {
+				m.PrintForAnimation(delay)
 			}
 		}
 
@@ -51,6 +62,12 @@ func FractalTessellation(width, height int) (*maze.Maze, error) {
 		})
 
 		for i := range 3 {
+			// mark the cell as visiting to highlight in the animation
+			if animate {
+				m.Cells[holeWalls[i][0]][holeWalls[i][1]] = maze.Visiting
+				m.PrintForAnimation(delay)
+			}
+
 			m.Cells[holeWalls[i][0]][holeWalls[i][1]] = maze.Empty
 		}
 

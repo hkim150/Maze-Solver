@@ -4,9 +4,10 @@ import (
 	"math/rand"
 	dataStructure "maze-solver/internal/data_structure"
 	"maze-solver/internal/maze"
+	"time"
 )
 
-func DFS(width, height int) (*maze.Maze, error) {
+func DFS(width, height int, animate bool) (*maze.Maze, error) {
 	// Create a base m filled with walls and isolated empty cells at odd rows and columns.
 	m, err := initialMaze(width, height)
 	if err != nil {
@@ -21,9 +22,22 @@ func DFS(width, height int) (*maze.Maze, error) {
 	stack := dataStructure.NewStack[maze.Pos]()
 	stack.Push(maze.Pos{startRow, startCol})
 
+	// Animation delay between frames
+	var delay time.Duration
+	if animate {
+		delay = 25 * time.Millisecond
+		m.PrintForAnimation(delay)
+	}
+
 	for !stack.IsEmpty() {
 		cell, _ := stack.Pop()
 		row, col := cell[0], cell[1]
+
+		// Mark current cell as visiting to highlight in the animation
+		if animate {
+			m.Cells[row][col] = maze.Visiting
+			m.PrintForAnimation(delay)
+		}
 
 		for _, dir := range randomDirections() {
 			neighRow := row + dir[0]*2
@@ -35,6 +49,11 @@ func DFS(width, height int) (*maze.Maze, error) {
 				stack.Push(maze.Pos{neighRow, neighCol})
 				break
 			}
+		}
+
+		// Mark current cell back as visited after animation
+		if animate {
+			m.Cells[row][col] = maze.Visited
 		}
 	}
 
