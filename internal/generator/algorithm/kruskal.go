@@ -4,9 +4,10 @@ import (
 	"math/rand"
 	dataStructure "maze-solver/internal/data_structure"
 	"maze-solver/internal/maze"
+	"time"
 )
 
-func Kruskal(width, height int) (*maze.Maze, error) {
+func Kruskal(width, height int, animate bool) (*maze.Maze, error) {
 	m, err := initialMaze(width, height)
 	if err != nil {
 		return m, err
@@ -28,6 +29,12 @@ func Kruskal(width, height int) (*maze.Maze, error) {
 		walls[i], walls[j] = walls[j], walls[i]
 	})
 
+	var delay time.Duration
+	if animate {
+		delay = 40 * time.Millisecond
+		m.PrintForAnimation(delay)
+	}
+
 	for _, wall := range walls {
 		row, col := wall[0], wall[1]
 
@@ -43,6 +50,11 @@ func Kruskal(width, height int) (*maze.Maze, error) {
 
 		// If the two cells are not already connected, remove the wall and connect them.
 		if !uf.IsConnected(cell_1, cell_2) {
+			if animate {
+				m.Cells[row][col] = maze.Visiting
+				m.PrintForAnimation(delay)
+			}
+
 			m.Cells[row][col] = maze.Empty
 			uf.Union(cell_1, cell_2)
 		}
