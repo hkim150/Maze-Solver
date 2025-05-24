@@ -25,7 +25,7 @@ func DFS(width, height int, animate bool) (*maze.Maze, error) {
 	// Animation delay between frames
 	var delay time.Duration
 	if animate {
-		delay = 25 * time.Millisecond
+		delay = 30 * time.Millisecond
 		m.PrintForAnimation(delay)
 	}
 
@@ -35,7 +35,7 @@ func DFS(width, height int, animate bool) (*maze.Maze, error) {
 
 		// Mark current cell as visiting to highlight in the animation
 		if animate {
-			m.Cells[row][col] = maze.Visiting
+			m.Cells[row][col] = maze.Highlight
 			m.PrintForAnimation(delay)
 		}
 

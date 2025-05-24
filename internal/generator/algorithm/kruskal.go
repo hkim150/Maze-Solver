@@ -51,7 +51,7 @@ func Kruskal(width, height int, animate bool) (*maze.Maze, error) {
 		// If the two cells are not already connected, remove the wall and connect them.
 		if !uf.IsConnected(cell_1, cell_2) {
 			if animate {
-				m.Cells[row][col] = maze.Visiting
+				m.Cells[row][col] = maze.Highlight
 				m.PrintForAnimation(delay)
 			}
 

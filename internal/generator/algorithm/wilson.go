@@ -3,9 +3,10 @@ package algorithm
 import (
 	dataStructure "maze-solver/internal/data_structure"
 	"maze-solver/internal/maze"
+	"time"
 )
 
-func Wilson(width, height int) (*maze.Maze, error) {
+func Wilson(width, height int, animate bool) (*maze.Maze, error) {
 	m, err := initialMaze(width, height)
 	if err != nil {
 		return m, err
@@ -18,6 +19,12 @@ func Wilson(width, height int) (*maze.Maze, error) {
 		for j := 1; j < m.Width-1; j += 2 {
 			notVisited.Add(maze.Pos{i, j})
 		}
+	}
+
+	var delay time.Duration
+	if animate {
+		delay = 25 * time.Millisecond
+		m.PrintForAnimation(delay)
 	}
 
 	// initially, choose a random cell as a visited cell
@@ -64,11 +71,19 @@ func Wilson(width, height int) (*maze.Maze, error) {
 					break
 				}
 				cell, _ := visiting.Pop()
+				if animate {
+					m.Cells[cell[0]][cell[1]] = maze.Highlight
+					m.PrintForAnimation(delay)
+				}
 				m.Cells[cell[0]][cell[1]] = maze.Empty
 			}
 
 			// add the current cell to the walk path
 			visiting.Push(maze.Pos{currRow, currCol})
+			if animate {
+				m.Cells[currRow][currCol] = maze.Highlight
+				m.PrintForAnimation(delay)
+			}
 			m.Cells[currRow][currCol] = maze.Visiting
 
 			// add the current cell's unvisited neighbors to the stack
@@ -94,6 +109,10 @@ func Wilson(width, height int) (*maze.Maze, error) {
 				for i := 0; i < len(s)-1; i++ {
 					r1, c1 := s[i][0], s[i][1]
 					r2, c2 := s[i+1][0], s[i+1][1]
+					if animate {
+						m.Cells[(r1+r2)/2][(c1+c2)/2] = maze.Highlight
+						m.PrintForAnimation(delay)
+					}
 					m.Cells[(r1+r2)/2][(c1+c2)/2] = maze.Visited
 					m.Cells[r1][c1] = maze.Visited
 					notVisited.Remove(maze.Pos{r1, c1})

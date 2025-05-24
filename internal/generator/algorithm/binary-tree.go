@@ -31,16 +31,16 @@ func BinaryTree(width, height int, animate bool) (*maze.Maze, error) {
 
 			if right {
 				if animate {
-					m.Cells[r][c+1] = maze.Visiting
+					m.Cells[r][c+1] = maze.Highlight
 					m.PrintForAnimation(delay)
 				}
-				m.Cells[r][c+1] = maze.Visited
+				m.Cells[r][c+1] = maze.Empty
 			} else if down {
 				if animate {
-					m.Cells[r+1][c] = maze.Visiting
+					m.Cells[r+1][c] = maze.Highlight
 					m.PrintForAnimation(delay)
 				}
-				m.Cells[r+1][c] = maze.Visited
+				m.Cells[r+1][c] = maze.Empty
 			}
 		}
 	}

@@ -43,7 +43,7 @@ func AldousBroder(width, height int, animate bool) (*maze.Maze, error) {
 
 					// mark the next cell as visiting to highlight in the animation
 					if animate {
-						m.Cells[neighRow][neighCol] = maze.Visiting
+						m.Cells[neighRow][neighCol] = maze.Highlight
 						m.PrintForAnimation(delay)
 					}
 

@@ -4,19 +4,31 @@ import (
 	"math/rand"
 	dataStructure "maze-solver/internal/data_structure"
 	"maze-solver/internal/maze"
+	"time"
 )
 
 const mergeProb = 0.5
 
-func Sidewinder(width, height int) (*maze.Maze, error) {
+func Sidewinder(width, height int, animate bool) (*maze.Maze, error) {
 	m, err := initialMaze(width, height)
 	if err != nil {
 		return m, err
 	}
 
+	var delay time.Duration
+	if animate {
+		delay = 50 * time.Millisecond
+		m.PrintForAnimation(delay)
+	}
+
 	// connect all columns in the top row
 	for c := 2; c < m.Width-2; c += 2 {
-		m.Cells[1][c] = maze.Visited
+		if animate {
+			m.Cells[1][c] = maze.Highlight
+			m.PrintForAnimation(delay)
+		}
+
+		m.Cells[1][c] = maze.Empty
 	}
 
 	// for each cell in a row, randomly decide whether to connect horizontal cells
@@ -26,10 +38,18 @@ func Sidewinder(width, height int) (*maze.Maze, error) {
 		set.Add(1)
 		for c := 3; c < m.Width-1; c += 2 {
 			if rand.Float64() < mergeProb {
-				m.Cells[r][c-1] = maze.Visited
+				if animate {
+					m.Cells[r][c-1] = maze.Highlight
+					m.PrintForAnimation(delay)
+				}
+				m.Cells[r][c-1] = maze.Empty
 			} else {
 				randCol, _ := set.GetRandom()
-				m.Cells[r-1][randCol] = maze.Visited
+				if animate {
+					m.Cells[r-1][randCol] = maze.Highlight
+					m.PrintForAnimation(delay)
+				}
+				m.Cells[r-1][randCol] = maze.Empty
 				set.Clear()
 			}
 			set.Add(c)
@@ -37,7 +57,11 @@ func Sidewinder(width, height int) (*maze.Maze, error) {
 
 		// flush the remainig set
 		randCol, _ := set.GetRandom()
-		m.Cells[r-1][randCol] = maze.Visited
+		if animate {
+			m.Cells[r-1][randCol] = maze.Highlight
+			m.PrintForAnimation(delay)
+		}
+		m.Cells[r-1][randCol] = maze.Empty
 		set.Clear()
 	}
 

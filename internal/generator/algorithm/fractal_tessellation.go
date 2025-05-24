@@ -64,7 +64,7 @@ func FractalTessellation(width, height int, animate bool) (*maze.Maze, error) {
 		for i := range 3 {
 			// mark the cell as visiting to highlight in the animation
 			if animate {
-				m.Cells[holeWalls[i][0]][holeWalls[i][1]] = maze.Visiting
+				m.Cells[holeWalls[i][0]][holeWalls[i][1]] = maze.Highlight
 				m.PrintForAnimation(delay)
 			}
 

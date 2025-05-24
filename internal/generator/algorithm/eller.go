@@ -23,7 +23,7 @@ func Ellers(width, height int, animate bool) (*maze.Maze, error) {
 
 	var delay time.Duration
 	if animate {
-		delay = 40 * time.Millisecond
+		delay = 50 * time.Millisecond
 		m.PrintForAnimation(delay)
 	}
 
@@ -36,7 +36,7 @@ func Ellers(width, height int, animate bool) (*maze.Maze, error) {
 				if rand.Float32() < sidewaysMergeProb {
 					// mark the wall as visiting to highlight for animation
 					if animate {
-						m.Cells[r][c+1] = maze.Visiting
+						m.Cells[r][c+1] = maze.Highlight
 						m.PrintForAnimation(delay)
 					}
 					
@@ -65,7 +65,7 @@ func Ellers(width, height int, animate bool) (*maze.Maze, error) {
 				if i == 0 || rand.Float64() < downwardMergeProb {
 					// mark the wall as visiting to highlight for animation
 					if animate {
-						m.Cells[r+1][cols[i]] = maze.Visiting
+						m.Cells[r+1][cols[i]] = maze.Highlight
 						m.PrintForAnimation(delay)
 					}
 
@@ -84,7 +84,7 @@ func Ellers(width, height int, animate bool) (*maze.Maze, error) {
 		if !uf.IsConnected(cell1, cell2) {
 			// mark the wall as visiting to highlight for animation
 			if animate {
-				m.Cells[r][c+1] = maze.Visiting
+				m.Cells[r][c+1] = maze.Highlight
 				m.PrintForAnimation(delay)
 			}
 

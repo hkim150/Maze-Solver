@@ -38,7 +38,7 @@ func HuntAndKill(width, height int, animate bool) (*maze.Maze, error) {
 						r, c = row, col
 
 						if animate {
-							m.Cells[r][c] = maze.Visiting
+							m.Cells[r][c] = maze.Highlight
 							m.PrintForAnimation(delay)
 						}
 
@@ -62,7 +62,7 @@ func HuntAndKill(width, height int, animate bool) (*maze.Maze, error) {
 			wallRow, wallCol := r+dir[0], c+dir[1]
 			if neighRow >= 1 && neighRow < m.Height-1 && neighCol >= 1 && neighCol < m.Width-1 && m.Cells[neighRow][neighCol] == maze.Visited {
 				if animate {
-					m.Cells[neighRow][neighCol] = maze.Visiting
+					m.Cells[neighRow][neighCol] = maze.Highlight
 					m.PrintForAnimation(delay)
 					m.Cells[neighRow][neighCol] = maze.Visited
 				}
@@ -84,7 +84,7 @@ func HuntAndKill(width, height int, animate bool) (*maze.Maze, error) {
 					m.Cells[wallRow][wallCol] = maze.Visited
 
 					if animate {
-						m.Cells[neighRow][neighCol] = maze.Visiting
+						m.Cells[neighRow][neighCol] = maze.Highlight
 						m.PrintForAnimation(delay)
 					}
 

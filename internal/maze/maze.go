@@ -16,6 +16,9 @@ const (
 	// For pathfinding
 	Visited
 	Visiting
+
+	// For animation
+	Highlight
 )
 
 // Define ANSI color codes
@@ -65,9 +68,11 @@ func (m *Maze) Print() {
 			case End:
 				fmt.Print(Red + "██" + Reset)
 			case Visited:
-				fmt.Print("  ")
+				fmt.Print(Gray + "██" + Reset)
 			case Visiting:
 				fmt.Print(Blue + "██" + Reset)
+			case Highlight:
+				fmt.Print(Yellow + "██" + Reset)
 			default:
 				fmt.Print("  ")
 			}

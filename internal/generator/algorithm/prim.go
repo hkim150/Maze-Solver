@@ -4,9 +4,10 @@ import (
 	"math/rand"
 	dataStructure "maze-solver/internal/data_structure"
 	"maze-solver/internal/maze"
+	"time"
 )
 
-func Prim(width, height int) (*maze.Maze, error) {
+func Prim(width, height int, animate bool) (*maze.Maze, error) {
 	m, err := initialMaze(width, height)
 	if err != nil {
 		return m, err
@@ -41,6 +42,12 @@ func Prim(width, height int) (*maze.Maze, error) {
 		rs.Add([4]int{row, col, dir[0], dir[1]})
 	}
 
+	var delay time.Duration
+	if animate {
+		delay = 40 * time.Millisecond
+		m.PrintForAnimation(delay)
+	}
+
 	for !rs.IsEmpty() {
 		// Randomly select a frontier wall from the pool
 		elem, _ := rs.GetRandom()
@@ -48,6 +55,10 @@ func Prim(width, height int) (*maze.Maze, error) {
 
 		// Remove the wall
 		row, col, rowDir, colDir := elem[0], elem[1], elem[2], elem[3]
+		if animate {
+			m.Cells[row+rowDir][col+colDir] = maze.Highlight
+			m.PrintForAnimation(delay)
+		}
 		m.Cells[row+rowDir][col+colDir] = maze.Visited
 
 		// mark the neighboring cell as visited and add the walls in between to the pool

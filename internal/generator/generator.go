@@ -10,14 +10,14 @@ import (
 var generators = map[string]generatorFunc{
 	"dfs":                algorithm.DFS,
 	"kruskal":            algorithm.Kruskal,
-	// "prim":               algorithm.Prim,
-	// "wilson":             algorithm.Wilson,
+	"prim":               algorithm.Prim,
+	"wilson":             algorithm.Wilson,
 	"aldous-broder":      algorithm.AldousBroder,
-	// "recursive-division": algorithm.RecursiveDivision,
+	"recursive-division": algorithm.RecursiveDivision,
 	"fractal":            algorithm.FractalTessellation,
 	"eller":              algorithm.Ellers,
 	"hunt-and-kill":      algorithm.HuntAndKill,
-	// "sidewinder":         algorithm.Sidewinder,
+	"sidewinder":         algorithm.Sidewinder,
 	"binary-tree":        algorithm.BinaryTree,
 }
 
