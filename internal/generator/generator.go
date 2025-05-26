@@ -36,7 +36,7 @@ func Generate(width, height int, algorithm string, animate bool) (*maze.Maze, er
 		}
 		algorithms := strings.Join(keys, ", ")
 
-		return &maze.Maze{}, fmt.Errorf("Unknown algorithm; Choose one from: %v\n", algorithms)
+		return &maze.Maze{}, fmt.Errorf("Unknown generator algorithm; Choose one from: %v\n", algorithms)
 	}
 
 	m, err := genFunc.Generate(width, height, animate)
@@ -44,19 +44,6 @@ func Generate(width, height int, algorithm string, animate bool) (*maze.Maze, er
 		return m, err
 	}
 
-	prepareForSolving(m)
+	m.CleanUp()
 	return m, nil
-}
-
-func prepareForSolving(m *maze.Maze) {
-	for r := 1; r < m.Height-1; r++ {
-		for c := 1; c < m.Width-1; c++ {
-			if m.Cells[r][c] != maze.Wall {
-				m.Cells[r][c] = maze.Empty
-			}
-		}
-	}
-
-	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Start
-	m.Cells[m.EndPos[0]][m.EndPos[1]] = maze.End
 }

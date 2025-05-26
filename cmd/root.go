@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"maze-solver/internal/generator"
 	"maze-solver/internal/maze"
+	"maze-solver/internal/solver"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -24,16 +26,27 @@ var rootCmd = &cobra.Command{
 		algorithm, _ := cmd.Flags().GetString("algorithm")
 		animate, _ := cmd.Flags().GetBool("animate")
 
-		m, err := generator.Generate(width, height, algorithm, animate)
+		m, err := generator.Generate(width, height, "dfs", false)
+		// m, err := generator.Generate(width, height, algorithm, animate)
 		if err != nil {
 			fmt.Println("Error generating maze:", err)
 			return
 		}
 
 		if animate {
-			maze.ClearScreen()
+			m.PrintForAnimation(2 * time.Second)
 		}
-		m.Print()
+
+		err = solver.Solve(m, algorithm, animate)
+		if err != nil {
+			fmt.Println("Error solving maze", err)
+			return
+		}
+
+		if animate {
+			maze.ClearScreen()
+			m.Print()
+		}
 	},
 }
 

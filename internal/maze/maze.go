@@ -66,19 +66,33 @@ func (m *Maze) Print() {
 			case Start:
 				fmt.Print(Green + "██" + Reset)
 			case End:
-				fmt.Print(Red + "██" + Reset)
+				fmt.Print(Yellow + "██" + Reset)
 			case Visited:
 				fmt.Print(Gray + "██" + Reset)
 			case Visiting:
 				fmt.Print(Blue + "██" + Reset)
 			case Highlight:
-				fmt.Print(Yellow + "██" + Reset)
+				fmt.Print(Red + "██" + Reset)
 			default:
 				fmt.Print("  ")
 			}
 		}
 		fmt.Println()
 	}
+}
+
+// clean up erases non-wall cells as empty and sets the start and end cells
+func (m *Maze) CleanUp() {
+	for r := 1; r < m.Height-1; r++ {
+		for c := 1; c < m.Width-1; c++ {
+			if m.Cells[r][c] != Wall {
+				m.Cells[r][c] = Empty
+			}
+		}
+	}
+
+	m.Cells[m.StartPos[0]][m.StartPos[1]] = Start
+	m.Cells[m.EndPos[0]][m.EndPos[1]] = End
 }
 
 // ClearScreen clears the terminal screen using ANSI escape codes

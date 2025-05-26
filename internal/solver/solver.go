@@ -11,13 +11,17 @@ var solvers = map[string]solverFunc{
 	"dfs": algorithm.DFS,
 }
 
-type solverFunc func(maze *maze.Maze, animate bool) error
+type solverFunc func(m *maze.Maze, animate bool) error
 
-func (f solverFunc) Solve(maze *maze.Maze, animate bool) error {
-	return f(maze, animate)
+func (f solverFunc) Solve(m *maze.Maze, animate bool) error {
+	return f(m, animate)
 }
 
-func Solve(maze *maze.Maze, algorithm string, animate bool) error {
+func Solve(m *maze.Maze, algorithm string, animate bool) error {
+	// set the stant and end position as empty for solving
+	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Empty
+	m.Cells[m.EndPos[0]][m.EndPos[1]] = maze.Empty
+
 	solveFunc, ok := solvers[algorithm]
 	if !ok {
 		keys := make([]string, 0, len(solvers))
@@ -29,5 +33,5 @@ func Solve(maze *maze.Maze, algorithm string, animate bool) error {
 		return fmt.Errorf("Unknown solver algorithm; Choose one from: %v\n", algorithms)
 	}
 
-	return solveFunc.Solve(maze, animate)
+	return solveFunc.Solve(m, animate)
 }
