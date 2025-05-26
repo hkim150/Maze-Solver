@@ -9,6 +9,7 @@ import (
 
 var solvers = map[string]solverFunc{
 	"dfs": algorithm.DFS,
+	"bfs": algorithm.BFS,
 }
 
 type solverFunc func(m *maze.Maze, animate bool) error
