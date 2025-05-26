@@ -19,7 +19,7 @@ func FractalTessellation(width, height int, animate bool) (*maze.Maze, error) {
 		length = 2*length - 1
 	}
 
-	m, err := initialMaze(length, length)
+	m, err := gridMaze(length, length)
 	if err != nil {
 		return m, err
 	}
@@ -40,11 +40,11 @@ func FractalTessellation(width, height int, animate bool) (*maze.Maze, error) {
 		for _, startCell := range startCells {
 			row, col := startCell[0], startCell[1]
 			for i := range length {
-				for j:=1-i%2; j<length; j+=2 {
+				for j := 1 - i%2; j < length; j += 2 {
 					m.Cells[row+i][col+j] = m.Cells[i+1][j+1]
 				}
 			}
-			
+
 			if animate && length > 1 {
 				m.PrintForAnimation(delay)
 			}

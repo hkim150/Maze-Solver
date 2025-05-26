@@ -6,10 +6,10 @@ import (
 	"maze-solver/internal/maze"
 )
 
-// initialMaze returns a maze with grid like structure, where each empty cell is isolated and surrounded by walls
+// gridMaze returns a maze with grid like structure, where each empty cell is isolated and surrounded by walls
 // The width and height must be at least 5 as the outer edge is a wall and a maze needs at least two cells for start and end
 // width and height are round down to the nearest odd number to have 1 size padding on all four edges
-func initialMaze(width, height int) (*maze.Maze, error) {
+func gridMaze(width, height int) (*maze.Maze, error) {
 	m, err := blankMaze(width, height)
 	if err != nil {
 		return m, err

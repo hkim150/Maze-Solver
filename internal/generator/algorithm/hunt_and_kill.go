@@ -6,7 +6,7 @@ import (
 )
 
 func HuntAndKill(width, height int, animate bool) (*maze.Maze, error) {
-	m, err := initialMaze(width, height)
+	m, err := gridMaze(width, height)
 	if err != nil {
 		return m, err
 	}
@@ -66,7 +66,7 @@ func HuntAndKill(width, height int, animate bool) (*maze.Maze, error) {
 					m.PrintForAnimation(delay)
 					m.Cells[neighRow][neighCol] = maze.Visited
 				}
-				
+
 				m.Cells[wallRow][wallCol] = maze.Visited
 				break
 			}

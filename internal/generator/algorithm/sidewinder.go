@@ -10,7 +10,7 @@ import (
 const mergeProb = 0.5
 
 func Sidewinder(width, height int, animate bool) (*maze.Maze, error) {
-	m, err := initialMaze(width, height)
+	m, err := gridMaze(width, height)
 	if err != nil {
 		return m, err
 	}

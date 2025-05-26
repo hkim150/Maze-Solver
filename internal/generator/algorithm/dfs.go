@@ -9,7 +9,7 @@ import (
 
 func DFS(width, height int, animate bool) (*maze.Maze, error) {
 	// Create a base m filled with walls and isolated empty cells at odd rows and columns.
-	m, err := initialMaze(width, height)
+	m, err := gridMaze(width, height)
 	if err != nil {
 		return m, err
 	}

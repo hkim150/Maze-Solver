@@ -13,7 +13,7 @@ const (
 )
 
 func Ellers(width, height int, animate bool) (*maze.Maze, error) {
-	m, err := initialMaze(width, height)
+	m, err := gridMaze(width, height)
 	if err != nil {
 		return m, err
 	}
@@ -39,7 +39,7 @@ func Ellers(width, height int, animate bool) (*maze.Maze, error) {
 						m.Cells[r][c+1] = maze.Highlight
 						m.PrintForAnimation(delay)
 					}
-					
+
 					m.Cells[r][c+1] = maze.Empty
 					uf.Union(cell1, cell2)
 				}
