@@ -44,6 +44,7 @@ func Wilson(width, height int, animate bool) (*maze.Maze, error) {
 		toVisit := dataStructure.NewStack[[4]int]()
 		toVisit.Push([4]int{row, col, 0, 0}) // initially the direction is 0,0
 
+		// visiting holds the path of the current walk
 		visiting := dataStructure.NewStack[maze.Pos]()
 
 		// dfs tries all possible ordering of nodes with the same visiting nodes when backtracking
