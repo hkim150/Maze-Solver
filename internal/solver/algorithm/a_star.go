@@ -30,6 +30,7 @@ func AStar(m *maze.Maze, animate bool) error {
 		curr := heap.Pop(&pq).(*node)
 
 		if curr.pos == m.EndPos {
+			m.CleanUp()
 			// Reconstruct the path
 			for p := curr.pos; p != m.StartPos; p = parent[p] {
 				m.Cells[p[0]][p[1]] = maze.Highlight
