@@ -10,6 +10,7 @@ import (
 var solvers = map[string]solverFunc{
 	"dfs": algorithm.DFS,
 	"bfs": algorithm.BFS,
+	"a-star": algorithm.AStar,
 }
 
 type solverFunc func(m *maze.Maze, animate bool) error

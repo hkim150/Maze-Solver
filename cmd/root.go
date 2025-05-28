@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"maze-solver/internal/generator"
-	"maze-solver/internal/maze"
 	"maze-solver/internal/solver"
 	"os"
 	"time"
@@ -44,8 +43,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		if animate {
-			maze.ClearScreen()
-			m.Print()
+			m.PrintForAnimation(0 * time.Second)
 		}
 	},
 }
