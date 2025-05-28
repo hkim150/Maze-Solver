@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"fmt"
 	"maze-solver/internal/maze"
 	"time"
 )
@@ -17,9 +18,8 @@ func BFS(m *maze.Maze, animate bool) error {
 	queue := []maze.Pos{m.StartPos}
 	parent := make(map[maze.Pos]maze.Pos)
 
-
-outer:
-	for len(queue) > 0 {
+	solved := false
+	for !solved && len(queue) > 0 {
 		pos := queue[0]
 		queue = queue[1:]
 
@@ -35,19 +35,24 @@ outer:
 				parent[nPos] = pos
 
 				if nPos == m.EndPos {
-					break outer
+					solved = true
+					break
 				}
 			}
 		}
 	}
 
-	m.CleanUp()
-	pos := m.EndPos
-	m.Cells[pos[0]][pos[1]] = maze.Highlight
-	for pos != m.StartPos {
-		pos = parent[pos]
-		m.Cells[pos[0]][pos[1]] = maze.Highlight
+	if !solved {
+		return fmt.Errorf("Could not find a solution for the maze")
 	}
+
+	// Reconstruct the path
+	m.CleanUp()
+	for p := m.EndPos; p != m.StartPos; p = parent[p] {
+		m.Cells[p[0]][p[1]] = maze.Highlight
+	}
+	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Highlight
+
 
 	return nil
 }

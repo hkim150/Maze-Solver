@@ -26,17 +26,13 @@ func AStar(m *maze.Maze, animate bool) error {
 		delay = 30 * time.Millisecond
 	}
 
+	solved := false
 	for len(pq) > 0 {
 		curr := heap.Pop(&pq).(*node)
 
 		if curr.pos == m.EndPos {
-			m.CleanUp()
-			// Reconstruct the path
-			for p := curr.pos; p != m.StartPos; p = parent[p] {
-				m.Cells[p[0]][p[1]] = maze.Highlight
-			}
-			m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Highlight
-			return nil
+			solved = true
+			break
 		}
 
 		if animate {
@@ -62,7 +58,18 @@ func AStar(m *maze.Maze, animate bool) error {
 		}
 	}
 
-	return fmt.Errorf("no path found from %v to %v", m.StartPos, m.EndPos)
+	if !solved {
+		return fmt.Errorf("Could not find a solution for the maze")
+	}
+
+	// Reconstruct the path
+	m.CleanUp()
+	for p := m.EndPos; p != m.StartPos; p = parent[p] {
+		m.Cells[p[0]][p[1]] = maze.Highlight
+	}
+	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Highlight
+
+	return nil
 }
 
 type node struct {
