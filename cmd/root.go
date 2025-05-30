@@ -28,7 +28,7 @@ var rootCmd = &cobra.Command{
 		m, err := generator.Generate(width, height, "dfs", false)
 		// m, err := generator.Generate(width, height, algorithm, animate)
 		if err != nil {
-			fmt.Println("Error generating maze:", err)
+			fmt.Println("Error generating maze: ", err)
 			return
 		}
 
@@ -38,7 +38,7 @@ var rootCmd = &cobra.Command{
 
 		err = solver.Solve(m, algorithm, animate)
 		if err != nil {
-			fmt.Println("Error solving maze", err)
+			fmt.Println("Error solving maze: ", err)
 			return
 		}
 

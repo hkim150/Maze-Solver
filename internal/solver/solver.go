@@ -8,9 +8,10 @@ import (
 )
 
 var solvers = map[string]solverFunc{
-	"dfs": algorithm.DFS,
-	"bfs": algorithm.BFS,
-	"a-star": algorithm.AStar,
+	"dfs":              algorithm.DFS,
+	"bfs":              algorithm.BFS,
+	"a-star":           algorithm.AStar,
+	"dead-end-filling": algorithm.DeadEndFilling,
 }
 
 type solverFunc func(m *maze.Maze, animate bool) error
