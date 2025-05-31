@@ -1,6 +1,8 @@
 package algorithm
 
-import "maze-solver/internal/maze"
+import (
+	"maze-solver/internal/maze"
+)
 
 // neighbors returns a slice of neighboring cells that is in boundary and not a wall
 func neighbors(m *maze.Maze, pos maze.Pos) []maze.Pos {

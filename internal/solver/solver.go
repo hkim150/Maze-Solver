@@ -12,6 +12,7 @@ var solvers = map[string]solverFunc{
 	"bfs":              algorithm.BFS,
 	"a-star":           algorithm.AStar,
 	"dead-end-filling": algorithm.DeadEndFilling,
+	"random-mouse":     algorithm.RandomMouse,
 }
 
 type solverFunc func(m *maze.Maze, animate bool) error
