@@ -81,8 +81,8 @@ func (m *Maze) Print() {
 	}
 }
 
-// clean up erases non-wall cells as empty and sets the start and end cells
-func (m *Maze) CleanUp() {
+// reset up erases non-wall cells as empty and sets the start and end cells
+func (m *Maze) Reset() {
 	for r := 1; r < m.Height-1; r++ {
 		for c := 1; c < m.Width-1; c++ {
 			if m.Cells[r][c] != Wall {
@@ -93,6 +93,17 @@ func (m *Maze) CleanUp() {
 
 	m.Cells[m.StartPos[0]][m.StartPos[1]] = Start
 	m.Cells[m.EndPos[0]][m.EndPos[1]] = End
+}
+
+// clean up erases all visiting and visited cells as empty
+func (m *Maze) CleanUp() {
+	for r := 1; r < m.Height-1; r++ {
+		for c := 1; c < m.Width-1; c++ {
+			if m.Cells[r][c] == Visiting || m.Cells[r][c] == Visited {
+				m.Cells[r][c] = Empty
+			}
+		}
+	}
 }
 
 // ClearScreen clears the terminal screen using ANSI escape codes

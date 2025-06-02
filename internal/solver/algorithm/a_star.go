@@ -63,7 +63,7 @@ func AStar(m *maze.Maze, animate bool) error {
 	}
 
 	// Reconstruct the path
-	m.CleanUp()
+	m.Reset()
 	for p := m.EndPos; p != m.StartPos; p = parent[p] {
 		m.Cells[p[0]][p[1]] = maze.Highlight
 	}

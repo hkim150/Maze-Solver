@@ -55,17 +55,17 @@ func RandomMouse(m *maze.Maze, animate bool) error {
 		m.PrintForAnimation(delay)
 	}
 
-	m.CleanUp()
-	
+	m.Reset()
+
 	// the deadends are always toggled true when they cannot be part of the solution path
 	for cell, ok := range visited {
 		if ok && !deadEnds[cell] {
 			m.Cells[cell[0]][cell[1]] = maze.Highlight
 		}
 	}
-	
+
 	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Highlight
-	
+
 	// junctions of the solution path may not be toggled on. Highlight junction if neighbor is highlighted
 	for cell := range junctions {
 		m.Cells[cell[0]][cell[1]] = maze.Empty

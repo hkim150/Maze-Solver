@@ -47,12 +47,11 @@ func BFS(m *maze.Maze, animate bool) error {
 	}
 
 	// Reconstruct the path
-	m.CleanUp()
+	m.Reset()
 	for p := m.EndPos; p != m.StartPos; p = parent[p] {
 		m.Cells[p[0]][p[1]] = maze.Highlight
 	}
 	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Highlight
-
 
 	return nil
 }

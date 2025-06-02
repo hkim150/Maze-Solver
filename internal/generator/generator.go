@@ -44,6 +44,6 @@ func Generate(width, height int, algorithm string, animate bool) (*maze.Maze, er
 		return m, err
 	}
 
-	m.CleanUp()
+	m.Reset()
 	return m, nil
 }
