@@ -36,7 +36,7 @@ func HandOnWall(m *maze.Maze, animate bool) error {
 		}
 	}
 
-	// map to keep track of junctions for highlighting
+	// map to keep track of junctions visit count for highlighting
 	junction := make(map[maze.Pos]int)
 	
 	for curr != m.EndPos {
