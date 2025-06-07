@@ -18,8 +18,8 @@ func Pledge(m *maze.Maze, animate bool) error {
 	// it is used to determine when to stop following the wall
 	angleCounter := 0
 
-	// map to keep track of junctions visit count for highlighting
-	junction := make(map[maze.Pos]int)
+	// map to keep track of parent cells for path reconstruction
+	parent := make(map[maze.Pos]maze.Pos)
 
 	var delay time.Duration
 	if animate {
@@ -43,16 +43,16 @@ outer:
 				break
 			}
 
+			if _, ok := parent[next]; !ok {
+				parent[next] = curr
+			}
+
 			curr = next
 
 			if animate {
-				if junction[curr] == 1 {
-					m.Cells[curr[0]][curr[1]] = maze.Highlight
-				} else if m.Cells[curr[0]][curr[1]] == maze.Empty {
-					m.Cells[curr[0]][curr[1]] = maze.Highlight
-				} else if m.Cells[curr[0]][curr[1]] == maze.Highlight {
-					m.Cells[curr[0]][curr[1]] = maze.Empty
-				}
+				m.Cells[curr[0]][curr[1]] = maze.Highlight
+				m.PrintForAnimation(delay)
+				m.Cells[curr[0]][curr[1]] = maze.Visited
 			}
 		}
 
@@ -66,6 +66,8 @@ outer:
 		// 2. left cell is a wall and front cell is empty - go forward one cell
 		// 3. left cell is a wall and front cell is a wall - turn right
 		for angleCounter != 0 {
+			next := curr
+
 			// for animation, highlight the current cell if moved
 			moved := false
 
@@ -79,13 +81,13 @@ outer:
 			if m.Cells[leftCell[0]][leftCell[1]] != maze.Wall {
 				d = leftDir
 				angleCounter--
-				curr = leftCell
+				next = leftCell
 				moved = true
 			} else {
 				frontCell := maze.Pos{curr[0] + dirs[d][0], curr[1] + dirs[d][1]}
 				// case 2
 				if m.Cells[frontCell[0]][frontCell[1]] != maze.Wall {
-					curr = frontCell
+					next = frontCell
 					moved = true
 				// case 3
 				} else {
@@ -94,25 +96,29 @@ outer:
 				}
 			}
 
-			if animate && moved {
-				if junction[curr] == 1 {
+			if moved {
+				if _, ok := parent[next]; !ok {
+					parent[next] = curr
+				}
+
+				curr = next
+
+				if animate {
 					m.Cells[curr[0]][curr[1]] = maze.Highlight
-				} else if m.Cells[curr[0]][curr[1]] == maze.Empty {
-					m.Cells[curr[0]][curr[1]] = maze.Highlight
-				} else if m.Cells[curr[0]][curr[1]] == maze.Highlight {
-					m.Cells[curr[0]][curr[1]] = maze.Empty
+					m.PrintForAnimation(delay)
+					m.Cells[curr[0]][curr[1]] = maze.Visited
 				}
 			}
 		}
 	}
 
+	// Reconstruct the path
+	m.Reset()
+	for p := m.EndPos; p != m.StartPos; p = parent[p] {
+		m.Cells[p[0]][p[1]] = maze.Highlight
+	}
+
+	m.Cells[m.StartPos[0]][m.StartPos[1]] = maze.Highlight
+
 	return nil
-}
-
-func isJunction(m *maze.Maze, pos maze.Pos) bool {
-	return len(neighbors(m, pos)) >= 3
-}
-
-func isDeadEnd(m *maze.Maze, pos maze.Pos) bool {
-	return len(neighbors(m, pos)) == 1
 }
