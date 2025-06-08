@@ -16,6 +16,7 @@ var solvers = map[string]solverFunc{
 	"hand-on-wall":     algorithm.HandOnWall,
 	"tremaux":          algorithm.Tremaux,
 	"pledge":           algorithm.Pledge,
+	"recursive":        algorithm.Recursive,
 }
 
 type solverFunc func(m *maze.Maze, animate bool) error
