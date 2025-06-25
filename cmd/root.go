@@ -34,7 +34,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		// pause for a moment after showing the generated maze
-		m.PrintForAnimation(1200 * time.Millisecond)
+		m.PrintForAnimation(1000 * time.Millisecond)
 		
 		err = solver.Solve(m, solverAlgo, animate)
 		if err != nil {
