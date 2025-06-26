@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"maze-solver/internal/generator"
+	"maze-solver/internal/maze"
 	"maze-solver/internal/solver"
 	"os"
 	"time"
@@ -43,6 +44,11 @@ var rootCmd = &cobra.Command{
 		}
 
 		m.PrintForAnimation(0)
+		
+		// Ensure cursor is shown when animation finishes
+		if animate {
+			maze.ShowCursor()
+		}
 	},
 }
 

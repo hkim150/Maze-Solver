@@ -35,25 +35,31 @@ const (
 type Pos [2]int
 
 type Maze struct {
-	Width    int
-	Height   int
-	Cells    [][]CellType
-	StartPos Pos
-	EndPos   Pos
+	Width      int
+	Height     int
+	Cells      [][]CellType
+	PrevCells  [][]CellType // Track previous state for incremental updates
+	StartPos   Pos
+	EndPos     Pos
+	CursorHome bool // Track if cursor is at home position
 }
 
 func NewMaze(width, height int) *Maze {
 	cells := make([][]CellType, height)
+	prevCells := make([][]CellType, height)
 	for row := range cells {
 		cells[row] = make([]CellType, width)
+		prevCells[row] = make([]CellType, width)
 	}
 
 	return &Maze{
-		Width:    width,
-		Height:   height,
-		Cells:    cells,
-		StartPos: Pos{1, 1},
-		EndPos:   Pos{height - 2, width - 2},
+		Width:      width,
+		Height:     height,
+		Cells:      cells,
+		PrevCells:  prevCells,
+		StartPos:   Pos{1, 1},
+		EndPos:     Pos{height - 2, width - 2},
+		CursorHome: false,
 	}
 }
 
@@ -93,6 +99,9 @@ func (m *Maze) Reset() {
 
 	m.Cells[m.StartPos[0]][m.StartPos[1]] = Start
 	m.Cells[m.EndPos[0]][m.EndPos[1]] = End
+	
+	// Reset animation state to ensure proper display update
+	m.CursorHome = false
 }
 
 // clean up erases all visiting and visited cells as empty
@@ -111,10 +120,76 @@ func ClearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-// PrintForAnimation clears the screen and prints the current state of the maze
-// with a delay for animation effect
-func (m *Maze) PrintForAnimation(delay time.Duration) {
+// HideCursor hides the terminal cursor
+func HideCursor() {
+	fmt.Print("\033[?25l")
+}
+
+// ShowCursor shows the terminal cursor
+func ShowCursor() {
+	fmt.Print("\033[?25h")
+}
+
+// MoveCursor moves the cursor to the specified row and column (1-indexed)
+func MoveCursor(row, col int) {
+	fmt.Printf("\033[%d;%dH", row+1, col*2+1)
+}
+
+// PrintCell prints a single cell at its current cursor position
+func (m *Maze) PrintCell(cellType CellType) {
+	switch cellType {
+	case Wall:
+		fmt.Print("██")
+	case Start:
+		fmt.Print(Green + "██" + Reset)
+	case End:
+		fmt.Print(Yellow + "██" + Reset)
+	case Visited:
+		fmt.Print(Gray + "██" + Reset)
+	case Visiting:
+		fmt.Print(Blue + "██" + Reset)
+	case Highlight:
+		fmt.Print(Red + "██" + Reset)
+	default:
+		fmt.Print("  ")
+	}
+}
+
+// UpdateChangedCells updates only the cells that have changed since the last frame
+func (m *Maze) UpdateChangedCells() {
+	for i := 0; i < m.Height; i++ {
+		for j := 0; j < m.Width; j++ {
+			if m.Cells[i][j] != m.PrevCells[i][j] {
+				MoveCursor(i, j)
+				m.PrintCell(m.Cells[i][j])
+				m.PrevCells[i][j] = m.Cells[i][j]
+			}
+		}
+	}
+	// Move cursor to bottom of maze to avoid interfering with display
+	MoveCursor(m.Height, 0)
+}
+
+// InitializeAnimation sets up the initial display for animation
+func (m *Maze) InitializeAnimation() {
 	ClearScreen()
+	HideCursor()
 	m.Print()
+	// Copy current state to previous state
+	for i := 0; i < m.Height; i++ {
+		copy(m.PrevCells[i], m.Cells[i])
+	}
+	m.CursorHome = true
+}
+
+// PrintForAnimation efficiently updates only changed cells for animation
+func (m *Maze) PrintForAnimation(delay time.Duration) {
+	if !m.CursorHome {
+		// First time - do full screen setup
+		m.InitializeAnimation()
+	} else {
+		// Subsequent frames - only update changed cells
+		m.UpdateChangedCells()
+	}
 	time.Sleep(delay)
 }
